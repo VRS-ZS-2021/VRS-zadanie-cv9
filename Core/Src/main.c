@@ -25,7 +25,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "display.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -45,7 +45,11 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+extern uint64_t disp_time;
+uint64_t saved_time;
+//char display_text[]="Juliana_Phamova_98360";
+char display_text[]="0123456789";
+int act_index=0, right=1;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -79,8 +83,6 @@ int main(void)
   NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
 
   /* System interrupt init*/
-  /* SysTick_IRQn interrupt configuration */
-  NVIC_SetPriority(SysTick_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),15, 0));
 
   /* USER CODE BEGIN Init */
 
@@ -90,7 +92,7 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-
+  Systick_Init();
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -99,12 +101,36 @@ int main(void)
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 
+  setSegments();
+  setDigits();
+  LL_mDelay(2000);
+  resetDigits();
+  resetSegments();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  if(disp_time > (saved_time + 2000))
+	  	  {
+
+	  		  display_sign(display_text[act_index],display_text[act_index+1],display_text[act_index+2],display_text[act_index+3]);
+	  	  	  saved_time = disp_time;
+
+	  	  	  if(right){ //urcovanie smeru
+	  	  		  act_index++;
+	  	  	  } else {
+	  	  		  act_index--;
+	  	  	  }
+	  	  	  if(act_index == strlen(display_text)-4) { //17 velkost zobrazovaneho textu, ak dojde nakoniec zmeni smer
+	  	  		  right = 0;
+	  	  	  }
+	  	  	  if (act_index == 0){
+	  	  		  right = 1;
+	  	  	  }
+
+	  	  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

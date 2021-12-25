@@ -38,7 +38,7 @@ extern "C" {
 void MX_TIM3_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-
+void Systick_Init(void);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus
