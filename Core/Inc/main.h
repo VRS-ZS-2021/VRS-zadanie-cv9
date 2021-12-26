@@ -69,7 +69,7 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-
+uint8_t checkButtonState(GPIO_TypeDef* PORT, uint8_t PIN, uint8_t edge, uint16_t samples_window, uint16_t samples_required);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/

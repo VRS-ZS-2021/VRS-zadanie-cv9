@@ -43,7 +43,7 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-
+uint8_t mode;
 /* USER CODE BEGIN PV */
 extern uint64_t disp_time;
 uint64_t saved_time;
@@ -85,7 +85,11 @@ int main(void)
   /* System interrupt init*/
 
   /* USER CODE BEGIN Init */
-
+  /*SYSCFG->EXTICR[1] &= ~(0xFU);
+  SYSCFG->EXTICR[1] |= (0x1U);
+  EXTI->IMR |= EXTI_IMR_MR4;
+  EXTI->RTSR &= ~(EXTI_IMR_MR4);
+  EXTI->FTSR |= EXTI_IMR_MR4;*/
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -100,19 +104,22 @@ int main(void)
   MX_I2C1_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
-
   setSegments();
   setDigits();
   LL_mDelay(2000);
   resetDigits();
   resetSegments();
+
+  mode = 0;
+  int8_t test;
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  if(disp_time > (saved_time + 2000))
+	  test = BUTTON_READ_VALUE;
+	  if(disp_time > (saved_time + 500))
 	  	  {
 
 	  		  display_sign(display_text[act_index],display_text[act_index+1],display_text[act_index+2],display_text[act_index+3]);
@@ -172,7 +179,30 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+uint8_t checkButtonState(GPIO_TypeDef* PORT, uint8_t PIN, uint8_t edge, uint16_t samples_window, uint16_t samples_required)
+{
+	//type your code for "checkButtonState" implementation here:
+	uint16_t detection = 0, timeout = 0;
+	while(timeout <= samples_window){ // cyklus bezi pokial nedocita potrebny pocet vzoriek a ak nahodou nastane detekcia funkcia sa ukonci a vrati 1
+		uint8_t actual_value = BUTTON_READ_VALUE;
+		if((actual_value && edge) || (!(actual_value) && !(edge))) {
+			detection++;
+		}
+		else{
+			detection = 0;
+		}
 
+		timeout++;
+
+		if(detection == samples_required){
+			return 1;
+		}
+	}
+	if (((timeout > samples_window) && (detection != samples_required))){ //ak cyklus dobehol a nenapocitali sme dostatocny pocet vzoriek iducich po sebe vrati 0
+		return 0;
+	}
+	return 0;
+}
 /* USER CODE END 4 */
 
 /**

@@ -32,7 +32,7 @@ extern "C" {
 /* USER CODE END Includes */
 
 /* USER CODE BEGIN Private defines */
-
+#define BUTTON_READ_VALUE (GPIOB -> IDR & (1 << 3))
 /* USER CODE END Private defines */
 
 void MX_GPIO_Init(void);
