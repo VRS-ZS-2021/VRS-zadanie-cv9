@@ -51,7 +51,7 @@ uint8_t mode, error;
 extern uint64_t disp_time;
 uint64_t saved_time;
 char display_text [100];
-int act_index=0, right=1;
+int act_index=0, right=1,index_for_dot=0;
 float humidity, temperature, pressure, altitude;
 /* USER CODE END PV */
 
@@ -145,6 +145,13 @@ int main(void)
 			  }
 			  sprintf(display_text, "TEMP_%2.1f", temperature);
 
+		      for(int i=0; i<strlen(display_text); i++){
+		          if(display_text[i]=='.'){
+		              display_text[i] = display_text[i+1];
+		              display_text[i+1] = '\0';
+		          }
+		      }
+		      index_for_dot=strlen(display_text)-1;
 		   }
 
 		   if (mode == 1){
@@ -167,6 +174,14 @@ int main(void)
 			  }
 			  sprintf(display_text, "BAR_%4.2f", pressure);
 
+		      for(int i=0; i<strlen(display_text); i++){
+		          if(display_text[i]=='.'){
+		              display_text[i] = display_text[i+1];
+		              display_text[i+1] = display_text[i+2];
+		              display_text[i+2] = '\0';
+		          }
+		      }
+		      index_for_dot=strlen(display_text)-2;
 		   }
 
 		   if(mode == 3){
@@ -177,13 +192,21 @@ int main(void)
 				altitude = -9999.9;
 			  }
 			  sprintf(display_text, "ALT_%4.1f", altitude);
+
+		      for(int i=0; i<strlen(display_text); i++){
+		          if(display_text[i]=='.'){
+		              display_text[i] = display_text[i+1];
+		              display_text[i+1] = '\0';
+		          }
+		      }
+		      index_for_dot=strlen(display_text)-1;
 		   }
 	  }
 
 	  if(disp_time > (saved_time + 500))
 	  	  {
 
-	  		  display_sign(display_text[act_index],display_text[act_index+1],display_text[act_index+2],display_text[act_index+3]);
+	  		  display_sign(display_text[act_index],display_text[act_index+1],display_text[act_index+2],display_text[act_index+3],index_for_dot,act_index+3);
 	  	  	  saved_time = disp_time;
 
 	  	  	  if(right){ //urcovanie smeru
