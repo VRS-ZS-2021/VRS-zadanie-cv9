@@ -48,7 +48,7 @@ void lps25hb_start_measurement(void) {
 	hts221_write_byte(HTS221_CTRL_REG2, ctrl); //activate measurement
 }
 
-void hts221_get_humidity(float* out) {
+void hts221_get_humidity(float* out) { //humidity measurement (%)
 	uint8_t data[2], h0_rh, h1_rh;
 	uint16_t h_out, h0_t0_out, h1_t0_out;
 
@@ -73,7 +73,7 @@ void hts221_get_humidity(float* out) {
 	*out = (float)((h1_rh-h0_rh)*(h_out-h0_t0_out)/(float)(h1_t0_out-h0_t0_out)+h0_rh);
 }
 
-void hts221_get_temperature(float* out) {
+void hts221_get_temperature(float* out) { //temperature measurement (°C)
 	uint8_t data[2];
 	uint16_t t_out, t0_out, t1_out, t0_degc, t1_degc;
 
@@ -105,7 +105,7 @@ void hts221_get_temperature(float* out) {
 	*out = (float)((t1_degc - t0_degc)*(t_out-t0_out)/(float)(t1_out-t0_out)+t0_degc);
 }
 
-void lps25hb_get_pressure(float* out) { //pressure in mBAR
+void lps25hb_get_pressure(float* out) { //pressure measurement (hPa = mBAR)
 	uint8_t data[3];
 	uint32_t pressure;// ref_pressure;
 
@@ -122,7 +122,7 @@ void lps25hb_get_pressure(float* out) { //pressure in mBAR
 	*out =  (float)(pressure)/(float)(4096);
 }
 
-void lps25hb_get_altitude(float* out) {
+void lps25hb_get_altitude(float* out) { //altitude measurement (m.n.m./AMSL)
 	uint8_t data[3];
 	uint32_t pressure;
 
