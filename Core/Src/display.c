@@ -2,7 +2,7 @@
 
 char Display_sign[4];
 uint64_t disp_time = 0, disp_time_saved = 0;
-
+int index_for_dot,actual_index;
 const unsigned char seven_seg_digits_decode_abcdefg[75]= {
 		/*  0     1     2     3     4     5     6     7     8     9     :     ;     */
 		0x7E, 0x30, 0x6D, 0x79, 0x33, 0x5B, 0x5F, 0x70, 0x7F, 0x7B, 0x00, 0x00,
@@ -71,6 +71,11 @@ void setDigits(void)
 	DIGIT_TIME_ON;
 }
 
+void setDecimalPoint(void)
+{
+	LL_GPIO_ResetOutputPin(SEGMENTDP_PORT, SEGMENTDP_PIN);
+}
+
 void set_sign(char sign){
 
 	if(seven_seg_digits_decode_abcdefg[sign - '0'] & (1<<6))
@@ -119,12 +124,14 @@ void setDigit(uint8_t pos)
 		break;
 	}
 }
-void display_sign(char sign_1,char sign_2, char sign_3,char sign_4)
+void display_sign(char sign_1,char sign_2, char sign_3,char sign_4,int index_dot,int act_index)
 {
 	Display_sign[0] = sign_1;
 	Display_sign[1] = sign_2;
 	Display_sign[2] = sign_3;
 	Display_sign[3] = sign_4;
+	index_for_dot = index_dot;
+	actual_index = act_index;
 }
 /**
  * Display data in dDisplayData.
@@ -137,6 +144,25 @@ void updateDisplay(void)
 
 		setDigit(i);
 		set_sign(Display_sign[3-i]);
+
+		//set dot
+		if(actual_index - index_for_dot == 0){
+			if(i == 4){
+				setDecimalPoint();
+			}
+		}
+
+		if(actual_index - index_for_dot == 1){
+			if(i == 3){
+				setDecimalPoint();
+			}
+		}
+
+		if(actual_index - index_for_dot == 2){
+			if(i == 2){
+				setDecimalPoint();
+			}
+		}
 
 		disp_time_saved = disp_time;
 		while((disp_time_saved + 2) > disp_time){};
