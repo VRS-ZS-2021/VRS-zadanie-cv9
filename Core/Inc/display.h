@@ -43,4 +43,4 @@ void updateDisplay(void);
 
 
 
-void display_sign(char sign_1,char sign_2, char sign_3,char sign_4);
+void display_sign(char sign_1,char sign_2, char sign_3,char sign_4,int index_dot,int act_index);
