@@ -188,7 +188,6 @@ void SysTick_Handler(void)
   /* USER CODE BEGIN SysTick_IRQn 0 */
 
   /* USER CODE END SysTick_IRQn 0 */
-
   /* USER CODE BEGIN SysTick_IRQn 1 */
 	disp_time++;
   /* USER CODE END SysTick_IRQn 1 */
@@ -209,24 +208,6 @@ void EXTI3_IRQHandler(void)
   /* USER CODE BEGIN EXTI3_IRQn 0 */
 
   /* USER CODE END EXTI3_IRQn 0 */
-  if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_3) != RESET)
-  {
-  if(checkButtonState(GPIOB,
-						3,
-						0,
-						1000,
-						900))
-	{
-	  mode++;
-	  if(mode >= 4) {
-		  mode = 0;
-	  }
-	}
-    LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_3);
-    /* USER CODE BEGIN LL_EXTI_LINE_3 */
-
-    /* USER CODE END LL_EXTI_LINE_3 */
-  }
   /* USER CODE BEGIN EXTI3_IRQn 1 */
 
   /* USER CODE END EXTI3_IRQn 1 */
@@ -256,9 +237,8 @@ void TIM3_IRQHandler(void)
 void I2C1_EV_IRQHandler(void)
 {
   /* USER CODE BEGIN I2C1_EV_IRQn 0 */
-
+	I2C1_EV_IRQHandler_fun();
   /* USER CODE END I2C1_EV_IRQn 0 */
-
   /* USER CODE BEGIN I2C1_EV_IRQn 1 */
 
   /* USER CODE END I2C1_EV_IRQn 1 */

@@ -26,6 +26,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "display.h"
+#include"iks01a1.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -43,12 +44,12 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-uint8_t mode;
+
 /* USER CODE BEGIN PV */
+uint8_t mode, error;
 extern uint64_t disp_time;
 uint64_t saved_time;
-//char display_text[]="Juliana_Phamova_98360";
-char display_text[]="0123456789";
+char display_text [100];
 int act_index=0, right=1;
 /* USER CODE END PV */
 
@@ -83,6 +84,8 @@ int main(void)
   NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
 
   /* System interrupt init*/
+  /* SysTick_IRQn interrupt configuration */
+  NVIC_SetPriority(SysTick_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),1, 0));
 
   /* USER CODE BEGIN Init */
   /*SYSCFG->EXTICR[1] &= ~(0xFU);
@@ -104,6 +107,10 @@ int main(void)
   MX_I2C1_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
+  error = 0;
+  if(!lps25hb_init()) error = 1;
+
+
   setSegments();
   setDigits();
   LL_mDelay(2000);
@@ -112,12 +119,17 @@ int main(void)
 
   mode = 0;
   int8_t test;
+  strcpy(display_text,"0123456789\0");
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
   while (1)
   {
+	  if(error) {
+		  strcpy(display_text,"I2C_address_error\0");
+	  }
 	  test = BUTTON_READ_VALUE;
 	  if(disp_time > (saved_time + 500))
 	  	  {

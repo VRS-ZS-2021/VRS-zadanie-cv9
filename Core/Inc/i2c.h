@@ -38,7 +38,10 @@ extern "C" {
 void MX_I2C1_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-
+void i2c_master_write(uint8_t data, uint8_t register_addr, uint8_t slave_addr, uint8_t read_flag);
+uint8_t* i2c_master_read(uint8_t* buffer, uint8_t length, uint8_t register_addr, uint8_t slave_addr, uint8_t read_flag);
+void I2C1_EV_IRQHandler(void);
+void I2C1_EV_IRQHandler_fun(void);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

@@ -1,0 +1,4 @@
+iks01a1.c:5:9:lps25hb_init	16	static
+iks01a1.c:25:9:lps25hb_read_byte	24	static
+iks01a1.c:30:9:hts221_read_byte	24	static
+iks01a1.c:35:9:lsm6ds0_read_byte	24	static
