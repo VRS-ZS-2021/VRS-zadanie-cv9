@@ -116,7 +116,7 @@ int main(void)
   resetSegments();
 
   mode = 0;
-  float humidity, temperature;
+  float humidity, temperature, pressure, altitude;
   strcpy(display_text,"0123456789\0");
   /* USER CODE END 2 */
 
@@ -127,10 +127,16 @@ int main(void)
   {
 	  if(error) {
 		  strcpy(display_text,"I2C_who_am_I_error\0");
-	  }
+	  } else {
 	  hts221_start_measurement();
+	  lps25hb_start_measurement();
 	  hts221_get_humidity(&humidity);
 	  hts221_get_temperature(&temperature);
+	  lps25hb_get_pressure(&pressure);
+	  lps25hb_start_measurement();
+	  lps25hb_get_altitude(&altitude);
+	  }
+
 	  if(disp_time > (saved_time + 500))
 	  	  {
 

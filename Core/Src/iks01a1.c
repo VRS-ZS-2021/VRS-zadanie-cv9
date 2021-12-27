@@ -13,6 +13,11 @@ uint8_t iks01a1_init(void){
 		return 0; //bad who am I value
 	}
 
+	ctrl = hts221_read_byte(LPS25HB_CTRL_REG1);
+	ctrl |= 1 << 7;
+	lps25hb_write_byte(LPS25HB_CTRL_REG1, ctrl); //active mode
+
+
 	LL_mDelay(100);
 	val = hts221_read_byte(HTS221_WHO_AM_I_ADDRES);
 
@@ -23,7 +28,6 @@ uint8_t iks01a1_init(void){
 
 	ctrl = hts221_read_byte(HTS221_CTRL_REG1);
 	ctrl |= 1 << 7;
-	ctrl |= 1 << 2;
 	hts221_write_byte(HTS221_CTRL_REG1, ctrl); //active mode
 	//uint8_t ctrltest = hts221_read_byte(HTS221_CTRL_REG1);
 
@@ -32,17 +36,13 @@ uint8_t iks01a1_init(void){
 	return 1;
 }
 
-uint8_t lps25hb_read_byte(uint8_t reg_addr) {
-	data = 0;
-	return *(i2c_master_read(&data, 1, reg_addr, LPS25HB_DEVICE_ADDRESS, 0));
-}
-
-uint8_t hts221_read_byte(uint8_t reg_addr) {
-	data = 0;
-	return *(i2c_master_read(&data, 1, reg_addr, HTS221_DEVICE_ADDRESS, 0));
-}
-
 void hts221_start_measurement(void) {
+	uint8_t ctrl = hts221_read_byte(LPS25HB_CTRL_REG2);
+	ctrl |= 0x1;
+	lps25hb_write_byte(LPS25HB_CTRL_REG2, ctrl); //activate measurement
+}
+
+void lps25hb_start_measurement(void) {
 	uint8_t ctrl = hts221_read_byte(HTS221_CTRL_REG2);
 	ctrl |= 0x1;
 	hts221_write_byte(HTS221_CTRL_REG2, ctrl); //activate measurement
@@ -105,6 +105,47 @@ void hts221_get_temperature(float* out) {
 	*out = (float)((t1_degc - t0_degc)*(t_out-t0_out)/(float)(t1_out-t0_out)+t0_degc);
 }
 
+void lps25hb_get_pressure(float* out) { //pressure in mBAR
+	uint8_t data[3];
+	uint32_t pressure;// ref_pressure;
+
+	uint8_t availability = 0;
+	availability = lps25hb_read_byte(LPS25HB_STATUS_REG);
+	availability &= (uint8_t)(1<<1)>>1;
+
+	lps25hb_readArray(data, LPS25HB_PRESSURE_ADDR, 3);
+	pressure = ((uint32_t)data[2]) << 16 | ((uint16_t)data[1]) << 8 | data[0];
+
+	/*lps25hb_readArray(data, LPS25HB_REF_PRESSURE_ADDR, 3);
+	ref_pressure = ((uint32_t)data[2]) << 16 | ((uint16_t)data[1]) << 8 | data[0];*/
+
+	*out =  (float)(pressure)/(float)(4096);
+}
+
+void lps25hb_get_altitude(float* out) {
+	uint8_t data[3];
+	uint32_t pressure;
+
+	uint8_t availability = 0;
+	availability = lps25hb_read_byte(LPS25HB_STATUS_REG);
+	availability &= (uint8_t)(1<<1)>>1;
+
+	lps25hb_readArray(data, LPS25HB_PRESSURE_ADDR, 3);
+	pressure = ((uint32_t)data[2]) << 16 | ((uint16_t)data[1]) << 8 | data[0];
+
+	*out = 44330*(1-pow((float)(pressure)/(float)(4096*1013.25f),(1/5.255f)));
+}
+
+uint8_t lps25hb_read_byte(uint8_t reg_addr) {
+	data = 0;
+	return *(i2c_master_read(&data, 1, reg_addr, LPS25HB_DEVICE_ADDRESS, 0));
+}
+
+uint8_t hts221_read_byte(uint8_t reg_addr) {
+	data = 0;
+	return *(i2c_master_read(&data, 1, reg_addr, HTS221_DEVICE_ADDRESS, 0));
+}
+
 uint8_t lsm6ds0_read_byte(uint8_t reg_addr)
 {
 	data = 0;
@@ -121,6 +162,11 @@ void hts221_readArray(uint8_t * data, uint8_t reg, uint8_t length)
 	i2c_master_read(data, length, reg, HTS221_DEVICE_ADDRESS, 1);
 }
 
+void lps25hb_readArray(uint8_t * data, uint8_t reg, uint8_t length)
+{
+	i2c_master_read(data, length, reg, LPS25HB_DEVICE_ADDRESS, 1);
+}
+
 void lsm6ds0_write_byte(uint8_t reg_addr, uint8_t value)
 {
 	i2c_master_write(value, reg_addr, LSM6DS0_DEVICE_ADDRESS, 0);
@@ -129,4 +175,9 @@ void lsm6ds0_write_byte(uint8_t reg_addr, uint8_t value)
 void hts221_write_byte(uint8_t reg_addr, uint8_t value)
 {
 	i2c_master_write(value, reg_addr, HTS221_DEVICE_ADDRESS, 0);
+}
+
+void lps25hb_write_byte(uint8_t reg_addr, uint8_t value)
+{
+	i2c_master_write(value, reg_addr, LPS25HB_DEVICE_ADDRESS, 0);
 }

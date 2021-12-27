@@ -6,6 +6,11 @@
 
 #define LPS25HB_WHO_AM_I_ADDRES	0x0F
 #define LPS25HB_WHO_AM_I_VALUE	0xBD
+#define LPS25HB_CTRL_REG1	0x20
+#define LPS25HB_CTRL_REG2	0x21
+#define LPS25HB_STATUS_REG	0x27
+#define LPS25HB_REF_PRESSURE_ADDR	0x8
+#define LPS25HB_PRESSURE_ADDR	0x28
 
 #define HTS221_DEVICE_ADDRESS 0xBE
 
@@ -33,6 +38,11 @@
 
 uint8_t iks01a1_init(void);
 uint8_t lps25hb_read_byte(uint8_t reg_addr);
+void lps25hb_readArray(uint8_t * data, uint8_t reg, uint8_t length);
+void lps25hb_write_byte(uint8_t reg_addr, uint8_t value);
+void lps25hb_start_measurement(void);
+void lps25hb_get_pressure(float* out);
+void lps25hb_get_altitude(float* out);
 
 uint8_t lsm6ds0_read_byte(uint8_t reg_addr);
 void lsm6ds0_write_byte(uint8_t reg_addr, uint8_t value);
