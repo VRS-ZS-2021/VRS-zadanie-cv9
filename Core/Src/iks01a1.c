@@ -50,7 +50,7 @@ void lps25hb_start_measurement(void) {
 
 void hts221_get_humidity(float* out) { //humidity measurement (%)
 	uint8_t data[2], h0_rh, h1_rh;
-	uint16_t h_out, h0_t0_out, h1_t0_out;
+	int16_t h_out, h0_t0_out, h1_t0_out;
 
 
 
@@ -81,7 +81,7 @@ void hts221_get_humidity(float* out) { //humidity measurement (%)
 
 void hts221_get_temperature(float* out) { //temperature measurement (°C)
 	uint8_t data[2];
-	uint16_t t_out, t0_out, t1_out, t0_degc, t1_degc;
+	int16_t t_out, t0_out, t1_out, t0_degc, t1_degc;
 
 	uint8_t availability = 0;
 	availability = hts221_read_byte(HTS221_STATUS_REG);
@@ -94,7 +94,7 @@ void hts221_get_temperature(float* out) { //temperature measurement (°C)
 	}
 
 	uint8_t tmp = hts221_read_byte(HTS221_T0_T1_DEGC_MSB);
-	//uint16_t tmp2;
+	uint16_t tmp2;
 
 	t0_degc = hts221_read_byte(HTS221_T0_DEGC);
 	t1_degc = hts221_read_byte(HTS221_T1_DEGC);
@@ -102,14 +102,14 @@ void hts221_get_temperature(float* out) { //temperature measurement (°C)
 	t0_degc += ((tmp & 0x3)<<8);
 	t0_degc /= 8;
 
-	//tmp2 = ((tmp & (0x3)<<2))<<6;
+	tmp2 = ((tmp & (0x3)<<2))<<6;
 	t1_degc += ((tmp & ((0x3)<<2))<<6);
 	t1_degc /= 8;
 
 	hts221_readArray(data, HTS221_T0_OUT, 2);
-	t0_out = ((uint16_t)data[1]) << 8 | data[0];
+	t0_out = (((uint16_t)data[1]) << 8) | data[0];
 	hts221_readArray(data, HTS221_T1_OUT, 2);
-	t1_out = ((uint16_t)data[1]) << 8 | data[0];
+	t1_out = (((uint16_t)data[1]) << 8) | data[0];
 
 	hts221_readArray(data, HTS221_TEMPERATURE_ADDR, 2);
 
