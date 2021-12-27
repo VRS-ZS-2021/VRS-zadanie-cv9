@@ -84,8 +84,6 @@ int main(void)
   NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
 
   /* System interrupt init*/
-  /* SysTick_IRQn interrupt configuration */
-  NVIC_SetPriority(SysTick_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),1, 0));
 
   /* USER CODE BEGIN Init */
   /*SYSCFG->EXTICR[1] &= ~(0xFU);
@@ -108,7 +106,7 @@ int main(void)
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
   error = 0;
-  if(!lps25hb_init()) error = 1;
+  if(!iks01a1_init()) error = 1;
 
 
   setSegments();
@@ -118,7 +116,7 @@ int main(void)
   resetSegments();
 
   mode = 0;
-  int8_t test;
+  float humidity, temperature;
   strcpy(display_text,"0123456789\0");
   /* USER CODE END 2 */
 
@@ -128,9 +126,11 @@ int main(void)
   while (1)
   {
 	  if(error) {
-		  strcpy(display_text,"I2C_address_error\0");
+		  strcpy(display_text,"I2C_who_am_I_error\0");
 	  }
-	  test = BUTTON_READ_VALUE;
+	  hts221_start_measurement();
+	  hts221_get_humidity(&humidity);
+	  hts221_get_temperature(&temperature);
 	  if(disp_time > (saved_time + 500))
 	  	  {
 

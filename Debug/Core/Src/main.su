@@ -1,7 +1,4 @@
 core_cm4.h:1657:22:__NVIC_SetPriorityGrouping	24	static
-core_cm4.h:1676:26:__NVIC_GetPriorityGrouping	4	static
-core_cm4.h:1816:22:__NVIC_SetPriority	16	static
-core_cm4.h:1863:26:NVIC_EncodePriority	40	static
 stm32f3xx_ll_rcc.h:1086:22:LL_RCC_HSI_Enable	4	static
 stm32f3xx_ll_rcc.h:1106:26:LL_RCC_HSI_IsReady	4	static
 stm32f3xx_ll_rcc.h:1132:22:LL_RCC_HSI_SetCalibTrimming	16	static
