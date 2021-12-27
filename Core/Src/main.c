@@ -52,6 +52,7 @@ extern uint64_t disp_time;
 uint64_t saved_time;
 char display_text [100];
 int act_index=0, right=1;
+float humidity, temperature, pressure, altitude;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -117,7 +118,6 @@ int main(void)
   resetSegments();
 
   mode = 0;
-  float humidity, temperature, pressure, altitude;
 //  strcpy(display_text,"0123456789\0");
   /* USER CODE END 2 */
 
@@ -128,55 +128,57 @@ int main(void)
 	  if(error) {
 		  strcpy(display_text,"I2C_who_am_I_error\0");
 	  } else {
-	  hts221_start_measurement();
-	  lps25hb_start_measurement();
-	  hts221_get_humidity(&humidity);
-	  hts221_get_temperature(&temperature);
-	  lps25hb_get_pressure(&pressure);
-	  lps25hb_start_measurement();
-	  lps25hb_get_altitude(&altitude);
+		  hts221_start_measurement();
+		  lps25hb_start_measurement();
+		  hts221_get_humidity(&humidity);
+		  hts221_get_temperature(&temperature);
+		  lps25hb_get_pressure(&pressure);
+		  lps25hb_start_measurement();
+		  lps25hb_get_altitude(&altitude);
+
+		  if (mode == 0) {
+			  if(temperature>=100){
+				temperature=99.9;
+			  }
+			  if(temperature<=-100){
+				temperature=-99.9;
+			  }
+			  sprintf(display_text, "TEMP_%2.1f", temperature);
+
+		   }
+
+		   if (mode == 1){
+			  if(humidity>=100){
+				humidity=99;
+			  }
+			  if(humidity<0){
+				humidity = 0;
+			  }
+			  sprintf(display_text, "HUM_%2.0f", humidity);
+		   }
+
+
+		   if (mode == 2){
+			  if(pressure>=10000){
+				pressure=9999.99;
+			  }
+			  if(pressure<0){
+				pressure = 0;
+			  }
+			  sprintf(display_text, "BAR_%4.2f", pressure);
+
+		   }
+
+		   if(mode == 3){
+			  if(altitude>=10000){
+				altitude = 9999.9;
+			  }
+			  if(altitude<=-10000){
+				altitude = -9999.9;
+			  }
+			  sprintf(display_text, "ALT_%4.1f", altitude);
+		   }
 	  }
-	  if (mode == 0) {
-	      if(temperature>=100){
-	        temperature=99.9;
-	      }
-	      if(temperature<=-100){
-	        temperature=-99.9;
-	      }
-	      printf(display_text, "TEMP_%.1f", temperature);
-
-	   }
-
-	   if (mode == 1){
-	      if(humidity>=100){
-	        humidity=99;
-	      }
-	      if(humidity<0){
-	        humidity = 0;
-	      }
-	      sprintf(display_text, "HUM_%d", humidity);
-	   }
-
-	   if (mode == 2){
-	      if(pressure>=10000){
-	        pressure=9999.99;
-	      }
-	      if(pressure<0){
-	        pressure = 0;
-	      }
-	      sprintf(display_text, "BAR_%.2f", pressure);
-
-	   }
-
-	   if(mode == 3){
-	      if(altitude>=10000){
-	        altitude = 9999.9;
-	      }
-	      if(altitude<=-10000){
-	        altitude = -9999.9;
-	      }
-	      sprintf(display_text, "ALT_%.1f", altitude);
-	   }
 
 	  if(disp_time > (saved_time + 500))
 	  	  {
@@ -189,7 +191,7 @@ int main(void)
 	  	  	  } else {
 	  	  		  act_index--;
 	  	  	  }
-	  	  	  if(act_index == strlen(display_text)-4) { //17 velkost zobrazovaneho textu, ak dojde nakoniec zmeni smer
+	  	  	  if(act_index == strlen(display_text)-4) {
 	  	  		  right = 0;
 	  	  	  }
 	  	  	  if (act_index == 0){

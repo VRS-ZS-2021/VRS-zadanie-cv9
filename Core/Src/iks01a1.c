@@ -4,7 +4,7 @@ uint8_t data = 0;
 
 uint8_t iks01a1_init(void){
 	uint8_t ctrl;
-	LL_mDelay(100);
+	LL_mDelay(500);
 	uint8_t val = lps25hb_read_byte(LPS25HB_WHO_AM_I_ADDRES);
 	//val = lsm6ds0_read_byte(LSM6DS0_WHO_AM_I_ADDRES);
 
@@ -18,7 +18,7 @@ uint8_t iks01a1_init(void){
 	lps25hb_write_byte(LPS25HB_CTRL_REG1, ctrl); //active mode
 
 
-	LL_mDelay(100);
+	LL_mDelay(500);
 	val = hts221_read_byte(HTS221_WHO_AM_I_ADDRES);
 
 	if(!(val == HTS221_WHO_AM_I_VALUE))
@@ -58,6 +58,12 @@ void hts221_get_humidity(float* out) { //humidity measurement (%)
 	availability = hts221_read_byte(HTS221_STATUS_REG);
 	availability &= (uint8_t)(1<<1) >> 1;
 
+	if (availability==0) { //waiting for reading availability
+		hts221_start_measurement();
+		availability = hts221_read_byte(HTS221_STATUS_REG);
+		availability &= (uint8_t)(0x1<<1);
+	}
+
 	h0_rh = hts221_read_byte(HTS221_H0_RH)/2;
 	h1_rh = hts221_read_byte(HTS221_H1_RH)/2;
 
@@ -80,6 +86,12 @@ void hts221_get_temperature(float* out) { //temperature measurement (°C)
 	uint8_t availability = 0;
 	availability = hts221_read_byte(HTS221_STATUS_REG);
 	availability &= (uint8_t)(1);
+
+	if (availability==0) { //waiting for reading availability
+		hts221_start_measurement();
+		availability = hts221_read_byte(HTS221_STATUS_REG);
+		availability &= (uint8_t)(1);
+	}
 
 	uint8_t tmp = hts221_read_byte(HTS221_T0_T1_DEGC_MSB);
 	//uint16_t tmp2;
@@ -113,6 +125,12 @@ void lps25hb_get_pressure(float* out) { //pressure measurement (hPa = mBAR)
 	availability = lps25hb_read_byte(LPS25HB_STATUS_REG);
 	availability &= (uint8_t)(1<<1)>>1;
 
+	if (availability==0) { //waiting for reading availability
+		lps25hb_start_measurement();
+		availability = lps25hb_read_byte(LPS25HB_STATUS_REG);
+		availability &= (uint8_t)(1<<1);
+	}
+
 	lps25hb_readArray(data, LPS25HB_PRESSURE_ADDR, 3);
 	pressure = ((uint32_t)data[2]) << 16 | ((uint16_t)data[1]) << 8 | data[0];
 
@@ -129,6 +147,12 @@ void lps25hb_get_altitude(float* out) { //altitude measurement (m.n.m./AMSL)
 	uint8_t availability = 0;
 	availability = lps25hb_read_byte(LPS25HB_STATUS_REG);
 	availability &= (uint8_t)(1<<1)>>1;
+
+	if (availability==0) { //waiting for reading availability
+		lps25hb_start_measurement();
+		availability = lps25hb_read_byte(LPS25HB_STATUS_REG);
+		availability &= (uint8_t)(1<<1);
+	}
 
 	lps25hb_readArray(data, LPS25HB_PRESSURE_ADDR, 3);
 	pressure = ((uint32_t)data[2]) << 16 | ((uint16_t)data[1]) << 8 | data[0];
