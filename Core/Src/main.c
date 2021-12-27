@@ -27,6 +27,7 @@
 /* USER CODE BEGIN Includes */
 #include "display.h"
 #include"iks01a1.h"
+#include"stdio.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -117,7 +118,7 @@ int main(void)
 
   mode = 0;
   float humidity, temperature, pressure, altitude;
-  strcpy(display_text,"0123456789\0");
+//  strcpy(display_text,"0123456789\0");
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -135,6 +136,47 @@ int main(void)
 	  lps25hb_start_measurement();
 	  lps25hb_get_altitude(&altitude);
 	  }
+	  if (mode == 0) {
+	      if(temperature>=100){
+	        temperature=99.9;
+	      }
+	      if(temperature<=-100){
+	        temperature=-99.9;
+	      }
+	      printf(display_text, "TEMP_%.1f", temperature);
+
+	   }
+
+	   if (mode == 1){
+	      if(humidity>=100){
+	        humidity=99;
+	      }
+	      if(humidity<0){
+	        humidity = 0;
+	      }
+	      sprintf(display_text, "HUM_%d", humidity);
+	   }
+
+	   if (mode == 2){
+	      if(pressure>=10000){
+	        pressure=9999.99;
+	      }
+	      if(pressure<0){
+	        pressure = 0;
+	      }
+	      sprintf(display_text, "BAR_%.2f", pressure);
+
+	   }
+
+	   if(mode == 3){
+	      if(altitude>=10000){
+	        altitude = 9999.9;
+	      }
+	      if(altitude<=-10000){
+	        altitude = -9999.9;
+	      }
+	      sprintf(display_text, "ALT_%.1f", altitude);
+	   }
 
 	  if(disp_time > (saved_time + 500))
 	  	  {
