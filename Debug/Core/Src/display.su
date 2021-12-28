@@ -4,8 +4,7 @@ display.c:27:6:resetSegments	8	static
 display.c:40:6:setSegments	8	static
 display.c:53:6:resetDigits	8	static
 display.c:65:6:setDigits	8	static
-display.c:74:6:setDecimalPoint	8	static
-display.c:79:6:set_sign	16	static
-display.c:109:6:setDigit	16	static
-display.c:129:6:display_sign	16	static
-display.c:142:6:updateDisplay	24	static
+display.c:74:6:set_sign	16	static
+display.c:104:6:setDigit	16	static
+display.c:122:6:display_sign	16	static
+display.c:133:6:updateDisplay	24	static
