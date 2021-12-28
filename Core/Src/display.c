@@ -73,7 +73,7 @@ void setDigits(void)
 
 void setDecimalPoint(void)
 {
-	LL_GPIO_ResetOutputPin(SEGMENTDP_PORT, SEGMENTDP_PIN);
+	LL_GPIO_ResetOutputPin(SEGMENTA_PORT, SEGMENTA_PIN);
 }
 
 void set_sign(char sign){
@@ -122,6 +122,8 @@ void setDigit(uint8_t pos)
 	case 3:
 		DIGIT_1_ON;
 		break;
+	case 4:
+		DIGIT_TIME_ON;
 	}
 }
 void display_sign(char sign_1,char sign_2, char sign_3,char sign_4,int index_dot,int act_index)
@@ -139,7 +141,7 @@ void display_sign(char sign_1,char sign_2, char sign_3,char sign_4,int index_dot
  */
 void updateDisplay(void)
 {
-	for(uint8_t i = 0; i < 4; i++)
+	for(uint8_t i = 0; i <= 4; i++)
 	{
 
 		setDigit(i);
