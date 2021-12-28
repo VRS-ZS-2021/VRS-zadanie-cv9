@@ -130,7 +130,7 @@ void display_sign(char sign_1,char sign_2, char sign_3,char sign_4,int index_dot
 	Display_sign[1] = sign_2;
 	Display_sign[2] = sign_3;
 	Display_sign[3] = sign_4;
-	index_for_dot = index_dot;
+	//index_for_dot = index_dot;
 	actual_index = act_index;
 }
 /**
@@ -146,22 +146,8 @@ void updateDisplay(void)
 		set_sign(Display_sign[3-i]);
 
 		//set dot
-		if(actual_index - index_for_dot == 0){
-			if(i == 4){
-				setDecimalPoint();
-			}
-		}
-
-		if(actual_index - index_for_dot == 1){
-			if(i == 3){
-				setDecimalPoint();
-			}
-		}
-
-		if(actual_index - index_for_dot == 2){
-			if(i == 2){
-				setDecimalPoint();
-			}
+		if((int8_t)actual_index - (int8_t)index_for_dot + 4 - i == 0){
+			setDecimalPoint();
 		}
 
 		disp_time_saved = disp_time;

@@ -162,6 +162,7 @@ int main(void)
 				humidity = 0;
 			  }
 			  sprintf(display_text, "HUM_%2.0f", humidity);
+			  index_for_dot=100;
 		   }
 
 
@@ -206,7 +207,7 @@ int main(void)
 	  if(disp_time > (saved_time + 500))
 	  	  {
 
-	  		  display_sign(display_text[act_index],display_text[act_index+1],display_text[act_index+2],display_text[act_index+3],index_for_dot,act_index+3);
+	  		  display_sign(display_text[act_index],display_text[act_index+1],display_text[act_index+2],display_text[act_index+3],index_for_dot,act_index);
 	  	  	  saved_time = disp_time;
 
 	  	  	  if(right){ //urcovanie smeru
