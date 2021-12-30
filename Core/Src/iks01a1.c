@@ -94,7 +94,6 @@ void hts221_get_temperature(float* out) { //temperature measurement (°C)
 	}
 
 	uint8_t tmp = hts221_read_byte(HTS221_T0_T1_DEGC_MSB);
-	uint16_t tmp2;
 
 	t0_degc = hts221_read_byte(HTS221_T0_DEGC);
 	t1_degc = hts221_read_byte(HTS221_T1_DEGC);
@@ -102,7 +101,6 @@ void hts221_get_temperature(float* out) { //temperature measurement (°C)
 	t0_degc += ((tmp & 0x3)<<8);
 	t0_degc /= 8;
 
-	tmp2 = ((tmp & (0x3)<<2))<<6;
 	t1_degc += ((tmp & ((0x3)<<2))<<6);
 	t1_degc /= 8;
 

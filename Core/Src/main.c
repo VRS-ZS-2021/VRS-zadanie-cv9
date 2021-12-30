@@ -123,13 +123,7 @@ int main(void)
 	  if(error) { //value from who am I register is no correct
 		  strcpy(display_text,"I2C_who_am_I_error\0");
 	  } else{
-		  hts221_start_measurement();
-		  lps25hb_start_measurement();
-		  hts221_get_humidity(&humidity);
-		  hts221_get_temperature(&temperature);
-		  lps25hb_get_pressure(&pressure);
-		  lps25hb_start_measurement();
-		  lps25hb_get_altitude(&altitude);
+		  read_sensors_values();
 
 		  if (mode == 0 && act_index == 0) { //data to display
 			  if(temperature>=100){
@@ -282,6 +276,17 @@ uint8_t checkButtonState(GPIO_TypeDef* PORT, uint8_t PIN, uint8_t edge, uint16_t
 		return 0;
 	}
 	return 0;
+}
+
+void read_sensors_values(void) {
+	hts221_start_measurement();
+	lps25hb_start_measurement();
+	hts221_get_humidity(&humidity);
+	hts221_get_temperature(&temperature);
+	lps25hb_get_pressure(&pressure);
+	lps25hb_start_measurement();
+	lps25hb_get_altitude(&altitude);
+
 }
 /* USER CODE END 4 */
 
