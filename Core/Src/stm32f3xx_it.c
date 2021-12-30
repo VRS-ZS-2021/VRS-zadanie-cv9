@@ -212,8 +212,8 @@ void EXTI3_IRQHandler(void)
 		  if(checkButtonState(GPIOB,
 							3,
 							0,
-							1000,
-							900)) {
+							2500,
+							2400)) {
 			  mode++;
 			  if(mode >= 4) mode = 0;
 			  act_index=0, right=1;

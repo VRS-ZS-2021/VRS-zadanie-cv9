@@ -88,11 +88,7 @@ int main(void)
   /* System interrupt init*/
 
   /* USER CODE BEGIN Init */
-  /*SYSCFG->EXTICR[1] &= ~(0xFU);
-  SYSCFG->EXTICR[1] |= (0x1U);
-  EXTI->IMR |= EXTI_IMR_MR4;
-  EXTI->RTSR &= ~(EXTI_IMR_MR4);
-  EXTI->FTSR |= EXTI_IMR_MR4;*/
+
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -118,16 +114,15 @@ int main(void)
   resetSegments();
 
   mode = 0;
-//  strcpy(display_text,"0123456789\0");
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  if(error) {
+	  if(error) { //value from who am I register is no correct
 		  strcpy(display_text,"I2C_who_am_I_error\0");
-	  } else {
+	  } else{
 		  hts221_start_measurement();
 		  lps25hb_start_measurement();
 		  hts221_get_humidity(&humidity);
@@ -136,7 +131,7 @@ int main(void)
 		  lps25hb_start_measurement();
 		  lps25hb_get_altitude(&altitude);
 
-		  if (mode == 0) {
+		  if (mode == 0 && act_index == 0) { //data to display
 			  if(temperature>=100){
 				temperature=99.9;
 			  }
@@ -154,7 +149,7 @@ int main(void)
 		      index_for_dot=strlen(display_text)-1;
 		   }
 
-		   if (mode == 1){
+		   if (mode == 1 && act_index == 0){
 			  if(humidity>=100){
 				humidity=99;
 			  }
@@ -166,7 +161,7 @@ int main(void)
 		   }
 
 
-		   if (mode == 2){
+		   if (mode == 2 && act_index == 0){
 			  if(pressure>=10000){
 				pressure=9999.99;
 			  }
@@ -185,7 +180,7 @@ int main(void)
 		      index_for_dot=strlen(display_text)-2;
 		   }
 
-		   if(mode == 3){
+		   if(mode == 3 && act_index == 0){
 			  if(altitude>=10000){
 				altitude = 9999.9;
 			  }
@@ -204,7 +199,7 @@ int main(void)
 		   }
 	  }
 
-	  if(disp_time > (saved_time + 500))
+	  if(disp_time > (saved_time + 500)) //moving characters on display
 	  	  {
 
 	  		  display_sign(display_text[act_index],display_text[act_index+1],display_text[act_index+2],display_text[act_index+3],index_for_dot,act_index);
